@@ -394,6 +394,9 @@ class demo_simple(object):
 
             predictions = self.model.decode(z_sample_c, cond=pose_emb.reshape(1,-1), cond2=clotype_emb_i.reshape(1,-1))
 
+            # ovo valjda izbaci S_clothes koji onda dodajes na minimal_shape
+            # ALI samo za one vertexe koji opisuju odjecu
+            # mogu dobiti ove predictions i onda to nadodati na SMPL koji ima neki drugi shape
             predictions = predictions * self.train_std + self.train_mean
 
             # exclude head, fingers and toes

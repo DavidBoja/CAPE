@@ -1,0 +1,19 @@
+
+po uputama napravio clean models gdje izbacio nesto iz pkl filea
+
+napravio Dockerfile
+docker build -t cape_img:ver1 -f Dockerfile .
+
+
+docker run --gpus all --name cape-container -it -v /home/davidboja/Projects/FER/CAPE:/CAPE cape_img:ver1
+
+# drugi put runnao
+docker run --gpus all --name cape-container -it -v /home/davidboja/Projects/FER/CAPE:/CAPE -v /media/davidboja/1TB_DISK/datasets:/datasets cape_img:ver2
+
+
+export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+
+
+
+
+python main.py --config configs/CAPE-affineconv_nz64_pose32_clotype32_male.yaml --mode demo --name checkpoint

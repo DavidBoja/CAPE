@@ -10,6 +10,9 @@ from psbody.mesh import Mesh
 args, args_dict = parse_config()
 np.random.seed(args_dict['seed'])
 project_dir = os.path.dirname(os.path.realpath(__file__))
+print(project_dir)
+input('PRESS ANY KEY')
+# ovo je neki smpl zenski model
 reference_mesh_file = os.path.join(project_dir, 'data/template_mesh.obj')
 reference_mesh = Mesh(filename=reference_mesh_file)
 
@@ -17,16 +20,16 @@ datadir_root = os.path.join(project_dir, 'data', 'datasets')
 data_dir = os.path.join(datadir_root, args.dataset)
 
 # load data for train and test
-if args.mode in ['train', 'test']:
-    print("Loading data from {} ..".format(data_dir))
-    bodydata = BodyData(nVal=100,
-                        train_mesh_fn=data_dir + '/train/train_disp.npy',
-                        train_cond1_fn=data_dir + '/train/train_{}.npy'.format(args.pose_type),
-                        train_cond2_fn=data_dir + '/train/train_{}.npy'.format('clo_label'),
-                        test_mesh_fn=data_dir + '/test/test_disp.npy',
-                        test_cond1_fn=data_dir + '/test/test_{}.npy'.format(args.pose_type),
-                        test_cond2_fn=data_dir + '/test/test_{}.npy'.format('clo_label'),
-                        reference_mesh_file=reference_mesh_file)
+# if args.mode in ['train', 'test']:
+#     print("Loading data from {} ..".format(data_dir))
+#     bodydata = BodyData(nVal=100,
+#                         train_mesh_fn=data_dir + '/train/train_disp.npy',
+#                         train_cond1_fn=data_dir + '/train/train_{}.npy'.format(args.pose_type),
+#                         train_cond2_fn=data_dir + '/train/train_{}.npy'.format('clo_label'),
+#                         test_mesh_fn=data_dir + '/test/test_disp.npy',
+#                         test_cond1_fn=data_dir + '/test/test_{}.npy'.format(args.pose_type),
+#                         test_cond2_fn=data_dir + '/test/test_{}.npy'.format('clo_label'),
+#                         reference_mesh_file=reference_mesh_file)
 
 if args.num_conv_layers==4:
     ds_factors = [1, args.ds_factor, 1, 1]
@@ -87,23 +90,23 @@ print("Building model graph...")
 model = models.CAPE(L=L, D=D, U=U, L_d=L_ds2, D_d=D_ds2, **params)
 
 # start train or test/demo
-if args.mode == 'train':
-    model.build_graph(model.input_num_verts, model.nn_input_channel, phase='train')
-    loss, t_step = model.fit(bodydata)
+# if args.mode == 'train':
+#     model.build_graph(model.input_num_verts, model.nn_input_channel, phase='train')
+#     loss, t_step = model.fit(bodydata)
 
-    # full test pipeline after training
-    model.build_graph(model.input_num_verts, model.nn_input_channel, phase='demo')
-    demos = demo_full(model, args.name, args.gender, args.dataset, data_dir, datadir_root,
-                 n_sample=args.demo_n_sample, save_obj=bool(args.save_obj), random_seed=args.seed,
-                 vis=bool(args.vis_demo), smpl_model_folder=args.smpl_model_folder)
+#     # full test pipeline after training
+#     model.build_graph(model.input_num_verts, model.nn_input_channel, phase='demo')
+#     demos = demo_full(model, args.name, args.gender, args.dataset, data_dir, datadir_root,
+#                  n_sample=args.demo_n_sample, save_obj=bool(args.save_obj), random_seed=args.seed,
+#                  vis=bool(args.vis_demo), smpl_model_folder=args.smpl_model_folder)
+#     demos.test_model(bodydata)
+#     demos.run()
+# else:
+model.build_graph(model.input_num_verts, model.nn_input_channel, phase='demo')
+demos = demo_full(model, args.name, args.gender, args.dataset, data_dir, datadir_root,
+                n_sample=args.demo_n_sample, save_obj=bool(args.save_obj), random_seed=args.seed,
+                vis=bool(args.vis_demo), smpl_model_folder=args.smpl_model_folder)
+if args.mode == 'test':
     demos.test_model(bodydata)
-    demos.run()
 else:
-    model.build_graph(model.input_num_verts, model.nn_input_channel, phase='demo')
-    demos = demo_full(model, args.name, args.gender, args.dataset, data_dir, datadir_root,
-                 n_sample=args.demo_n_sample, save_obj=bool(args.save_obj), random_seed=args.seed,
-                 vis=bool(args.vis_demo), smpl_model_folder=args.smpl_model_folder)
-    if args.mode == 'test':
-        demos.test_model(bodydata)
-    else:
-        demos.run()
+    demos.run()

@@ -204,14 +204,24 @@ class base_model(object):
 
     def _get_path(self, folder):
         path = os.path.dirname(os.path.realpath(__file__))
-        return os.path.join(path, '..', folder, self.name)
+        # print(path)
+        # print(folder)
+        # print(os.path.join(path, '..', folder, self.name))
+        # return os.path.join(path, '..', folder, self.name)
+        return os.path.join(path, '..', folder)
+        # return os.path.join(path, folder, self.name)
 
     def _get_session(self, sess=None):
         """Restore parameters if no session given."""
         if sess is None:
             sess = tf.Session(graph=self.graph)
             filename = tf.train.latest_checkpoint(self._get_path('checkpoints'))
+            # print(filename)
+            # print('debugaj')
             self.op_saver.restore(sess, filename)
+
+            # saver = tf.train.import_meta_graph('model_dir/model.meta')
+            # restore = saver.restore(sess,tf.train.latest_checkpoint('model_dir/'))
         return sess
 
     def _weight_variable(self, shape, trainable=True):
@@ -226,7 +236,7 @@ class base_model(object):
         tf.summary.histogram(var.op.name, var)
         return var
 
-
+####################################################################################################################################
 class CAPE(base_model):
     '''
     Mesh CVAE + discriminator
