@@ -18,8 +18,11 @@ RUN apt-get update && apt-get install -y git \
 	python3-pip \
 	vim \
 	libstdc++6 \
+    zsh \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+RUN sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
 RUN  pip install --upgrade pip
 
@@ -51,4 +54,4 @@ RUN pip3 install \
 
 #RUN export LD_LIBRARY_PATH=/usr/local/cuda-10.0/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
-WORKDIR /
+WORKDIR /CAPE
